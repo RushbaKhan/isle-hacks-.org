@@ -74,23 +74,40 @@ const filters = filterTopics ?? (['all', 'plans', 'esp', 'aim', 'safety', 'setup
       showFilters && (
         <div
           class:list={[
-            'mt-8 flex flex-wrap gap-2',
-            contentAlign === 'center' ? 'justify-center' : 'justify-start',
+            'mt-8 flex flex-col gap-3',
+            contentAlign === 'center' ? 'items-center' : 'items-start',
           ]}
           data-faq-filters
         >
-          {filters.map((topic, i) => (
-            <button
-              type="button"
-              class:list={[
-                'faq-filter-chip rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:text-foreground',
-                { 'is-active': i === 0 },
-              ]}
-              data-faq-filter={topic}
-            >
-              {topicLabels[topic]}
-            </button>
-          ))}
+          <label class="faq-search flex w-full max-w-md items-center gap-2 rounded-full border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus-within:border-primary">
+            <Icon name="search" size={16} />
+            <input
+              type="search"
+              placeholder="Search questions"
+              aria-label="Search questions"
+              data-faq-search
+              class="w-full min-w-0 border-0 bg-transparent text-foreground outline-none placeholder:text-muted-foreground"
+            />
+          </label>
+          <div
+            class:list={[
+              'flex flex-wrap gap-2',
+              contentAlign === 'center' ? 'justify-center' : 'justify-start',
+            ]}
+          >
+            {filters.map((topic, i) => (
+              <button
+                type="button"
+                class:list={[
+                  'faq-filter-chip rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:text-foreground',
+                  { 'is-active': i === 0 },
+                ]}
+                data-faq-filter={topic}
+              >
+                {topicLabels[topic]}
+              </button>
+            ))}
+          </div>
         </div>
       )
     }

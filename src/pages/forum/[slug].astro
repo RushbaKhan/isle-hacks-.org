@@ -3,9 +3,11 @@ import '../../styles/forum.css';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import Icon from '../../components/icons/Icon.astro';
-import { forumPosts, getForumPost } from '../../data/forum';
+import { checkoutPath } from '../../config/checkout';
+import { forumCategoryPath, forumCommunityHandle, forumPosts, getForumPost } from '../../data/forum';
 import { pageTitle } from '../../config/seo';
 import { breadcrumbSchema, discussionForumPostingSchema } from '../../utils/schema';
+import { ROUTES } from '../../utils/path';
 
 export function getStaticPaths() {
   return forumPosts.map((post) => ({ params: { slug: post.slug } }));
@@ -14,7 +16,8 @@ export function getStaticPaths() {
 const post = getForumPost(Astro.params.slug!);
 if (!post) return Astro.redirect('/forum/');
 const path = `/forum/${post.slug}/`;
-const breadcrumbs = [{ name: 'Home', path: '/' }, { name: 'Forum', path: '/forum/' }, { name: post.category, path: '/forum/' }, { name: post.title, path }];
+const breadcrumbs = [{ name: 'Home', path: '/' }, { name: 'Forum', path: '/forum/' }, { name: post.category, path: forumCategoryPath(post.category) }, { name: post.title, path }];
+const purchaseUrl = checkoutPath('isle');
 const relatedPosts = [
   ...forumPosts.filter((item) => item.slug !== post.slug && item.category === post.category),
   ...forumPosts.filter((item) => item.slug !== post.slug && item.category !== post.category),
@@ -32,16 +35,20 @@ const relatedPosts = [
         <main class="forum-main">
           <article class="forum-detail-card" data-forum-vote data-post-slug={post.slug} data-upvotes={post.upvotes}>
             <div class="forum-vote forum-vote--detail" aria-label="Discussion voting">
-              <button class="forum-vote__up" type="button" data-vote-up aria-label="Upvote this discussion"><Icon name="chevronDown" size={17} /></button><strong data-vote-count>{post.upvotes}</strong><button type="button" disabled aria-label="Downvoting is unavailable"><Icon name="chevronDown" size={17} /></button>
+              <button class="forum-vote__up" type="button" data-vote-up aria-label="Upvote this discussion"><Icon name="chevronDown" size={17} /></button><strong data-vote-count>{post.upvotes}</strong><button class="forum-vote__down" type="button" data-vote-down aria-label="Downvote this discussion"><Icon name="chevronDown" size={17} /></button>
             </div>
             <div class="forum-detail-content">
-              <div class="forum-post-meta"><span class={`forum-community-avatar tone-${post.categoryTone}`}><Icon name="users" size={15} /></span><a href="/forum/" class="forum-community-name">d/{post.category.toLowerCase().replaceAll(' ', '')}</a><span>·</span><span><Icon name="userRound" size={13} /> Isle Hacks guide team</span><span>Guide-based Q&amp;A</span></div>
+              <div class="forum-post-meta"><span class={`forum-community-avatar tone-${post.categoryTone}`}><Icon name="users" size={15} /></span><a href={forumCategoryPath(post.category)} class="forum-community-name">{forumCommunityHandle(post.category)}</a><span>·</span><span><Icon name="userRound" size={13} /> Isle Hacks guide team</span><span>Guide-based Q&amp;A</span></div>
               <h1>{post.title}</h1>
               {post.flair && <span class={`forum-flair tone-${post.categoryTone}`}>{post.flair}</span>}
               <div class="forum-detail-copy">{post.body.map((paragraph) => <p>{paragraph}</p>)}</div>
               {post.sourceTitle && <p class="forum-source forum-source--detail">Based on: <a href={post.sourcePath}>{post.sourceTitle}</a></p>}
               <div class="forum-post-actions forum-post-actions--detail"><a href="#comments"><Icon name="messageCircle" size={16} /> {post.commentsCount} guide replies</a><a href={post.sourcePath}><Icon name="navBlog" size={15} /> Read source guide</a></div>
-              <div class="forum-login-prompt"><span class="forum-user-dot">i</span><span>Preview discussion</span><span>Posting and voting are unavailable here</span></div>
+              <div class="forum-login-prompt">
+                <span class="forum-user-dot">IH</span>
+                <a href={purchaseUrl}>Try Now</a>
+                <a href={ROUTES.forum}>Browse discussions</a>
+              </div>
               <section class="forum-comments" id="comments" aria-labelledby="comments-title">
                 <div class="forum-comments__heading"><h2 id="comments-title">Guide replies <span>{post.commentsCount}</span></h2><span>From the source article</span></div>
                 {post.comments.map((comment) => (

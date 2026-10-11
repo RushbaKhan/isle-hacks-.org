@@ -84,6 +84,11 @@ export const PAGE_SEO: Record<string, PageSeoEntry> = {
     description:
       'Discuss The Isle Evrima gameplay, ESP terminology, radar use, patch changes, and Windows PC setup with the Isle Hacks community.',
   },
+  '/forum/guidelines/': {
+    title: 'Community Guidelines | Isle Hacks Forum',
+    description:
+      'Keep Isle Hacks forum discussions friendly, on topic, and useful. Read the community guidelines before you browse Q&A.',
+  },
   '/terms/': {
     title: 'Terms & Conditions | Isle Hacks',
     description:

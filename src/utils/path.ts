@@ -55,6 +55,7 @@ export const ROUTES = {
   reviews: '/reviews/',
   blog: '/blog/',
   forum: '/forum/',
+  forumGuidelines: '/forum/guidelines/',
   products: PRODUCT_BASE,
   productsElite: PRODUCT_BASE,
   productsUtilities: PRODUCT_BASE,

@@ -75,18 +75,26 @@ function initFaqFilters() {
 
     const items = list.querySelectorAll<HTMLElement>('[data-faq-topic]');
     const chips = container.querySelectorAll<HTMLButtonElement>('[data-faq-filter]');
+    const search = container.querySelector<HTMLInputElement>('[data-faq-search]');
+
+    const apply = () => {
+      const topic = container.querySelector<HTMLButtonElement>('[data-faq-filter].is-active')?.getAttribute('data-faq-filter') ?? 'all';
+      const query = search?.value.trim().toLocaleLowerCase() ?? '';
+      items.forEach((item) => {
+        const itemTopic = item.getAttribute('data-faq-topic');
+        const matchesTopic = topic === 'all' || itemTopic === topic;
+        const matchesQuery = !query || (item.textContent?.toLocaleLowerCase().includes(query) ?? false);
+        item.toggleAttribute('data-hidden', !(matchesTopic && matchesQuery));
+      });
+    };
 
     chips.forEach((chip) => {
       chip.addEventListener('click', () => {
-        const topic = chip.getAttribute('data-faq-filter');
         chips.forEach((c) => c.classList.toggle('is-active', c === chip));
-        items.forEach((item) => {
-          const itemTopic = item.getAttribute('data-faq-topic');
-          const show = topic === 'all' || itemTopic === topic;
-          item.toggleAttribute('data-hidden', !show);
-        });
+        apply();
       });
     });
+    search?.addEventListener('input', apply);
   });
 }
 
